@@ -1,36 +1,54 @@
-import streamlit as st
 import pandas as pd
-from core.data import SAMPLE_DATASETS, load_sample
+import streamlit as st
+
+from core import store
+from core.data import guess_label_col, list_datasets, load_dataset, read_csv_bytes
+
 
 def render():
     st.title("Quản lý dữ liệu")
-    st.caption("Chọn dữ liệu mẫu hoặc tải CSV. Dữ liệu đã xác nhận sẽ được lưu trong phiên làm việc để dùng ở trang trực quan hóa.")
     mode = st.radio("Nguồn dữ liệu", ["Dataset có sẵn", "Tải CSV lên"], horizontal=True)
+
     if mode == "Dataset có sẵn":
-        name = st.selectbox("Chọn dataset", SAMPLE_DATASETS)
-        df, labels = load_sample(name)
-        label_name = "label"
-        df = df.copy(); df[label_name] = labels
-        st.session_state.dataset_name = name
-        st.session_state.dataset_df = df
-        st.session_state.label_column = label_name
+        names = list_datasets()
+        current = st.session_state.get("dataset_name")
+        name = st.selectbox("Chọn dataset", names, index=names.index(current) if current in names else 0)
+        df, label = load_dataset(name)
+        desc = store.list_custom().get(name, {}).get("desc")
+        if desc:
+            st.caption(desc)
     else:
         uploaded = st.file_uploader("Chọn tệp CSV", type=["csv"])
         if uploaded is None:
             st.info("Tải lên một tệp CSV để xem trước dữ liệu.")
             return
         try:
-            df = pd.read_csv(uploaded)
+            df = read_csv_bytes(uploaded.getvalue())
         except Exception as exc:
             st.error(f"Không đọc được CSV: {exc}")
             return
-        st.session_state.dataset_name = uploaded.name
-        st.session_state.dataset_df = df
-    df = st.session_state.dataset_df
+        name, label = uploaded.name, guess_label_col(df)
+
+    st.session_state.dataset_name = name
+    st.session_state.dataset_df = df
+    st.session_state.dataset_label = label
+
+    st.markdown("### Tổng quan")
+    n_numeric = len(df.select_dtypes("number").columns)
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Số mẫu", f"{len(df):,}")
+    m2.metric("Số cột", len(df.columns))
+    m3.metric("Cột dạng số", n_numeric)
+    m4.metric("Giá trị thiếu", f"{int(df.isna().sum().sum()):,}")
+    if label:
+        st.caption(f"Cột nhãn được nhận diện: **{label}**")
     st.markdown("### Xem trước dữ liệu")
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Số mẫu", len(df)); m2.metric("Số cột", len(df.columns)); m3.metric("Giá trị thiếu", int(df.isna().sum().sum()))
-    st.dataframe(df.head(10), use_container_width=True)
-    st.success(f"Đã chọn dữ liệu: {st.session_state.dataset_name}. Có thể dùng dataset này trong trang Trực quan hóa.")
+    st.dataframe(df.head(10), width="stretch")
+    with st.expander("Thống kê mô tả và giá trị thiếu theo cột"):
+        st.dataframe(df.describe(include="all").T, width="stretch")
+        missing = df.isna().sum()
+        st.dataframe(pd.DataFrame({"Giá trị thiếu": missing, "Tỉ lệ (%)": (missing / max(len(df), 1) * 100).round(2)}), width="stretch")
+    st.success(f"Đã chọn dữ liệu: **{name}**. Mở trang **Trực quan hóa** hoặc **So sánh** để dùng dataset này.")
+
 
 render()
