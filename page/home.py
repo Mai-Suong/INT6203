@@ -46,14 +46,16 @@ def render():
 
     st.markdown("### Các chức năng chính")
     cols = st.columns(4)
-    items = [("🗃️", "Quản lý dữ liệu", "Chọn dataset mẫu hoặc tải tệp CSV."),
-             ("🧩", "Khám phá thuật toán", "Tìm hiểu nhanh 9 phương pháp giảm chiều."),
-             ("📊", "Trực quan hóa", "Chạy thuật toán, chỉnh tham số, xem biểu đồ 1D/2D/3D."),
-             ("⚖️", "So sánh", "Đối chiếu nhiều thuật toán, có chỉ số chất lượng.")]
-    for col, (ico, title, desc) in zip(cols, items):
-        col.markdown(f"<div class='feature-card'><div style='font-size:25px'>{ico}</div>"
-                     f"<b style='font-size:21px'>{title}</b><p class='muted' style='font-size:15px'>{desc}</p></div>",
-                     unsafe_allow_html=True)
+    items = [("🗃️", "Quản lý dữ liệu", "Chọn dataset mẫu hoặc tải tệp CSV.", "page/data_page.py"),
+             ("🧩", "Khám phá thuật toán", "Tìm hiểu nhanh 9 phương pháp giảm chiều.", "page/explore.py"),
+             ("📊", "Trực quan hóa", "Chạy thuật toán, chỉnh tham số, xem biểu đồ 1D/2D/3D.", "page/algorithm.py"),
+             ("⚖️", "So sánh", "Đối chiếu nhiều thuật toán, có chỉ số chất lượng.", "page/comparison.py")]
+    for i, (col, (ico, title, desc, target)) in enumerate(zip(cols, items)):
+        with col:
+            # Cả thẻ bấm được: st.page_link chuyển trang giống thanh menu (CSS ở core/ui.py, lớp st-key-feat_*)
+            with st.container(key=f"feat_{i}"):
+                st.page_link(target, label=title, icon=ico)
+                st.markdown(desc)
 
     st.markdown("### 9 thuật toán được hỗ trợ")
     cols = st.columns(3)

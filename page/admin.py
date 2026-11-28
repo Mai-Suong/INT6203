@@ -45,8 +45,6 @@ def _login():
             else:
                 time.sleep(1)  # làm chậm việc dò mật khẩu
                 st.error("Tên đăng nhập hoặc mật khẩu không chính xác.")
-    st.markdown("<p class='muted' style='text-align:center;font-size:.85rem'>Khách có thể dùng mọi chức năng trực quan hóa mà không cần đăng nhập. Chỉ khu vực quản trị dataset cần xác thực.</p>", unsafe_allow_html=True)
-
 
 def _add_form():
     st.markdown("#### Thêm dataset mới")

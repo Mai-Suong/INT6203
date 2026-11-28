@@ -40,9 +40,10 @@ div:has(> .st-key-site_footer){margin-top:auto;}
   content:"D"; display:inline-flex; align-items:center; justify-content:center; width:2.15rem; height:2.15rem;
   border-radius:50%; background:var(--teal); color:#fff; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.35rem;
 }
-.st-key-brand_link a p{font-family:'Barlow Condensed','Impact',sans-serif; font-weight:800; font-size:1.65rem; letter-spacing:.4px; text-transform:uppercase;}
+.st-key-brand_link a p{font-family:inherit; font-weight:800; font-size:1.5rem; letter-spacing:.3px;}
 .st-key-login_link a{border:1px solid rgba(255,255,255,.85); border-radius:6px; padding:.42rem .95rem !important; background:transparent !important; transition:background .15s;}
-.st-key-login_link a:hover{background:rgba(255,255,255,.14) !important;}
+.st-key-login_link a:hover{background:var(--peach) !important; border-color:var(--peach) !important;}
+.st-key-login_link a:hover p, .st-key-login_link a:hover [data-testid="stIconMaterial"]{color:var(--navy) !important;}
 .st-key-login_link a p{font-weight:600; font-size:.92rem;}
 .st-key-login_link [data-testid="stIconMaterial"]{color:#fff !important;}
 
@@ -80,8 +81,9 @@ div:has(> .st-key-site_footer){margin-top:auto;}
 }
 [data-testid="stBaseButton-primary"] p, [data-testid="stBaseButton-primaryFormSubmit"] p{color:#fff !important;}
 [data-testid="stBaseButton-primary"]:hover, [data-testid="stBaseButton-primaryFormSubmit"]:hover{
-  background:var(--teal-dark) !important; border-color:var(--teal-dark) !important; transform:translateY(-1px);
+  background:var(--peach) !important; border-color:var(--peach) !important; transform:translateY(-1px);
 }
+[data-testid="stBaseButton-primary"]:hover p, [data-testid="stBaseButton-primaryFormSubmit"]:hover p{color:var(--navy) !important;}
 [data-testid="stBaseButton-primary"]:disabled{opacity:.45;}
 
 /* ---------- Thẻ ---------- */
@@ -93,6 +95,14 @@ div:has(> .st-key-site_footer){margin-top:auto;}
 .algo-desc{font-size:15px; color:var(--muted); line-height:1.5; margin-top:8px;}
 .feature-card{background:var(--teal); border:1px solid var(--navy); border-radius:16px; padding:18px; min-height:175px; box-sizing:border-box; color:var(--navy);}
 .feature-card .muted{color:#000 !important; font-weight:400;}
+/* Thẻ "Các chức năng chính" bấm được: cả thẻ là một liên kết */
+[class*="st-key-feat_"]{position:relative; background:var(--teal); border:1px solid var(--navy); border-radius:16px; padding:18px; min-height:175px; transition:all .2s ease-in-out;}
+[class*="st-key-feat_"]:hover{background:var(--peach); transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,28,68,.15);}
+[class*="st-key-feat_"] a{padding:0 !important; background:transparent !important; text-decoration:none !important;}
+[class*="st-key-feat_"] *{position:static !important;}
+[class*="st-key-feat_"] a::after{z-index:5; content:""; position:absolute; inset:0; border-radius:16px;}
+[class*="st-key-feat_"] a p{color:var(--navy) !important; font-size:21px !important; font-weight:700 !important; margin:0;}
+[class*="st-key-feat_"] [data-testid="stMarkdownContainer"] p{color:#000; font-size:15px;}
 .tag{display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; margin-top:auto; align-self:flex-start;}
 div[data-testid="stMetric"]{background:#fff; border:1px solid var(--line); padding:12px 14px; border-radius:12px;}
 
@@ -103,6 +113,8 @@ div[data-testid="stMetric"]{background:#fff; border:1px solid var(--line); paddi
 .login-title svg{width:2.1rem; height:2.1rem;}
 .st-key-login_card [data-testid="stForm"]{border:0 !important; padding:0 !important;}
 .st-key-login_card [data-testid="stBaseButton-primaryFormSubmit"]{width:100%; padding:.6rem 0;}
+/* ẩn chữ 'Press Enter to submit form' */
+[data-testid="InputInstructions"]{display:none !important;}
 /* viền xanh khi focus */
 div[data-baseweb="input"]:focus-within, div[data-baseweb="base-input"]:focus-within{
   border-color:#86b7fe !important; box-shadow:0 0 0 .22rem rgba(13,110,253,.22) !important;}
